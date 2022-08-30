@@ -33,7 +33,6 @@ Sub* JSON_to_Sub(char *json_payload) {
 	}
 	sub->rn = cJSON_Print(rn);
 	sub->rn = strtok(sub->rn, "\"");
-	printf("Sub->rn : %s\n", sub->rn);
 
 	// enc
 	enc = cJSON_GetObjectItem(root, "enc");
@@ -41,8 +40,8 @@ Sub* JSON_to_Sub(char *json_payload) {
 	// net
 	net = cJSON_GetObjectItem(enc, "net");
 	int net_size = cJSON_GetArraySize(net);
-	char net_str[4] = { '\0' };
-	char tmp[4] = { '\0' };
+	char net_str[10] = { '\0' };
+	char tmp[10] = { '\0' };
 	for (int i = 0; i < net_size; i++) {
 		sprintf(tmp, "%d", cJSON_GetArrayItem(net, i)->valueint);
 		strcat(net_str, tmp);
@@ -50,10 +49,8 @@ Sub* JSON_to_Sub(char *json_payload) {
 			strcat(net_str, ",");
 		}
 	}
-
 	sub->net = (char *)malloc(sizeof(char) * strlen(net_str) + 1);
 	strcpy(sub->net, net_str);
-	printf("Sub->net : %s\n", sub->net);
 
 	// nu
 	nu = cJSON_GetObjectItem(root, "nu");
@@ -65,10 +62,9 @@ Sub* JSON_to_Sub(char *json_payload) {
 			strcat(nu_str, ",");
 		}
 	}
-
 	sub->nu = (char *)malloc(sizeof(char) * strlen(nu_str) + 1);
 	strcpy(sub->nu, nu_str);
-	printf("Sub->nu : %s\n", sub->nu);
+
 
 end:
 	cJSON_Delete(json);
