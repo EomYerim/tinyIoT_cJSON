@@ -23,6 +23,7 @@ char* CNT_to_json(CNT* cnt_object) {
 	cJSON_AddStringToObject(cnt, "et", cnt_object->et);
 	cJSON_AddNumberToObject(cnt, "cni", cnt_object->cni);
 	cJSON_AddNumberToObject(cnt, "cbs", cnt_object->cbs);
+	cJSON_AddStringToObject(cnt, "lbl", cnt_object->lbl);
 
 	json = cJSON_Print(root);
 
