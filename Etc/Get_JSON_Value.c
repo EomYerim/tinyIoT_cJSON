@@ -4,11 +4,10 @@
 #include "cJSON.h"
 #include "onem2m.h"
 
-char *Get_JSON_Value_char(char *key, char *json) {
+char *Get_JSON_Value(char *key, char *json) {
 	char json_copy[100];
 	char *resource = NULL;
 	char *value = NULL;
-
 
 	cJSON *root = NULL;
 	cJSON *ckey = NULL;
