@@ -4,11 +4,10 @@
 #include "cJSON.h"
 #include "onem2m.h"
 
-char *Get_JSON_Value_char(char *key, char *json) {
+int Get_JSON_Value_int(char *key, char *json) {
 	char json_copy[100];
 	char *resource = NULL;
-	char *value = NULL;
-
+	int value = 0;
 
 	cJSON *root = NULL;
 	cJSON *ckey = NULL;
@@ -23,7 +22,7 @@ char *Get_JSON_Value_char(char *key, char *json) {
 		goto end;
 	}
 
-	//Extracting resources from json
+	// Extracting resources from json
 	strcpy(json_copy, json);
 	resource = strstr(json_copy, "m2m:");
 	resource = strtok(resource, "\"");
@@ -31,11 +30,10 @@ char *Get_JSON_Value_char(char *key, char *json) {
 	root = cJSON_GetObjectItem(cjson, resource);
 
 	ckey = cJSON_GetObjectItem(root, key);
-	if (!cJSON_IsString(ckey) && ckey->valuestring == NULL) {
+	if (!cJSON_IsNumber(ckey)) {
 		goto end;
 	}
-	value = cJSON_Print(ckey);
-	value = strtok(value, "\"");
+	value = ckey->valueint;
 
 end:
 	cJSON_Delete(cjson);

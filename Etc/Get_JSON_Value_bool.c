@@ -4,11 +4,9 @@
 #include "cJSON.h"
 #include "onem2m.h"
 
-char *Get_JSON_Value_char(char *key, char *json) {
+bool Get_JSON_Value_bool(char *key, char *json) {
 	char json_copy[100];
 	char *resource = NULL;
-	char *value = NULL;
-
 
 	cJSON *root = NULL;
 	cJSON *ckey = NULL;
@@ -31,14 +29,19 @@ char *Get_JSON_Value_char(char *key, char *json) {
 	root = cJSON_GetObjectItem(cjson, resource);
 
 	ckey = cJSON_GetObjectItem(root, key);
-	if (!cJSON_IsString(ckey) && ckey->valuestring == NULL) {
+	if (!cJSON_IsTrue(ckey) && !cJSON_IsFalse(ckey))
+	{
 		goto end;
 	}
-	value = cJSON_Print(ckey);
-	value = strtok(value, "\"");
+	else if (cJSON_IsTrue(ckey))
+	{
+		return true;
+	}
+	else if (cJSON_IsFalse(ckey))
+	{
+		return false;
+	}
 
 end:
-	cJSON_Delete(cjson);
-
-	return value;
+	cJSON_Delete(json);
 }
