@@ -23,6 +23,7 @@ char* AE_to_json(AE *ae_object) {
 	cJSON_AddStringToObject(ae, "api", ae_object->api);
 	cJSON_AddBoolToObject(ae, "rr", ae_object->rr);
 	cJSON_AddStringToObject(ae, "aei", ae_object->aei);
+	cJSON_AddStringToObject(ae, "lbl", ae_object->lbl);
 
 	json = cJSON_Print(root);
 
