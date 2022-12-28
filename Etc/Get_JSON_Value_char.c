@@ -31,11 +31,10 @@ char *Get_JSON_Value_char(char *key, char *json) {
 	root = cJSON_GetObjectItem(cjson, resource);
 
 	ckey = cJSON_GetObjectItem(root, key);
-	if (!cJSON_IsString(ckey) && ckey->valuestring == NULL) {
-		goto end;
+	if (ckey != NULL) {
+		value = cJSON_Print(ckey);
+		value = strtok(value, "\"");
 	}
-	value = cJSON_Print(ckey);
-	value = strtok(value, "\"");
 
 end:
 	cJSON_Delete(cjson);

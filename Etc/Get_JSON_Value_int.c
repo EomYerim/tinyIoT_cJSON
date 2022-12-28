@@ -7,7 +7,7 @@
 int Get_JSON_Value_int(char *key, char *json) {
 	char json_copy[100];
 	char *resource = NULL;
-	int value = 0;
+	int value = -1;
 
 	cJSON *root = NULL;
 	cJSON *ckey = NULL;
@@ -30,10 +30,10 @@ int Get_JSON_Value_int(char *key, char *json) {
 	root = cJSON_GetObjectItem(cjson, resource);
 
 	ckey = cJSON_GetObjectItem(root, key);
-	if (!cJSON_IsNumber(ckey)) {
-		goto end;
+	if (ckey != NULL) {
+		value = ckey->valueint;
 	}
-	value = ckey->valueint;
+
 
 end:
 	cJSON_Delete(cjson);

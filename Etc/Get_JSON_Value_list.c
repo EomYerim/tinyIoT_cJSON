@@ -9,6 +9,7 @@ char *Get_JSON_Value_list(char *key, char *json) {
 	char *resource = NULL;
 	char *value = NULL;
 
+
 	cJSON *root = NULL;
 	cJSON *ckey = NULL;
 
@@ -33,12 +34,16 @@ char *Get_JSON_Value_list(char *key, char *json) {
 		// pv / pvs
 		char *pv_str = strtok(key, "-");
 		cJSON *pv = cJSON_GetObjectItem(root, pv_str);
-
+		if (pv == NULL) {
+			return NULL;
+		}
 		// acr
 		char *acr_str = strtok(NULL, "-");
 		cJSON *acrs = cJSON_GetObjectItem(pv, acr_str);
 		int acr_size = cJSON_GetArraySize(acrs);
-
+		if (acrs == NULL || acr_size == 0) {
+			return NULL;
+		}
 		// acor / acop
 		char *ckey_str = strtok(NULL, "-");
 		cJSON *acr = NULL;
@@ -49,8 +54,14 @@ char *Get_JSON_Value_list(char *key, char *json) {
 		cJSON_ArrayForEach(acr, acrs) {
 			acor = cJSON_GetObjectItem(acr, "acor");
 			int acor_size = cJSON_GetArraySize(acor);
+			if (acor == NULL || acor_size == 0) {
+				return NULL;
+			}
 			if (!strcmp(ckey_str, "acop")) {
 				acop = cJSON_GetObjectItem(acr, "acop");
+				if (acop == NULL) {
+					return NULL;
+				}
 			}
 			for (int j = 0; j < acor_size; j++) {
 				if (strstr(ckey_str, "acor") != NULL) {	// acor
@@ -59,6 +70,7 @@ char *Get_JSON_Value_list(char *key, char *json) {
 				else {	// acop
 					strcat(acorp_str, strtok(cJSON_Print(acop), "\""));
 				}
+
 				if (j < acor_size - 1) {
 					strcat(acorp_str, ",");
 				}
@@ -76,13 +88,19 @@ char *Get_JSON_Value_list(char *key, char *json) {
 		if (strstr(key, "-") != NULL) {	// '-' 존재 ex) key: enc-net
 			char *subRoot_str = strtok(key, "-");
 			cJSON *subRoot = cJSON_GetObjectItem(root, subRoot_str);
+			if (subRoot == NULL) {
+				return NULL;
+			}
 			key = strtok(NULL, "-");
 			ckey = cJSON_GetObjectItem(subRoot, key);
 		}
-		else {	// '-' 존재 X ex) key: acpi
+		else {	// '-' 존재 X ex) acpi
 			ckey = cJSON_GetObjectItem(root, key);
 		}
 
+		if (ckey == NULL) {
+			return NULL;
+		}
 		int ckey_size = cJSON_GetArraySize(ckey);
 		char ckey_str[100] = { '\0' };
 		char tmp[10] = { '\0' };
