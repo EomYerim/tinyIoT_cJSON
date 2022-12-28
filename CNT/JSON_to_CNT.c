@@ -10,6 +10,7 @@ CNT* Json_to_CNT(char *json_payload) {
 
 	cJSON *root = NULL;
 	cJSON *rn = NULL;
+	cJSON *acpi = NULL;
 
 	cJSON* json = cJSON_Parse(json_payload);
 	if (json == NULL) {
@@ -31,6 +32,15 @@ CNT* Json_to_CNT(char *json_payload) {
 	}
 	cnt->rn = cJSON_Print(rn);
 	cnt->rn = strtok(cnt->rn, "\"");
+
+	// acpi
+	acpi = cJSON_GetObjectItem(root, "acpi");
+	if (!cJSON_IsString(rn) && (rn->valuestring == NULL))
+	{
+		goto end;
+	}
+	cnt->acpi = cJSON_Print(acpi);
+	cnt->acpi = strtok(cnt->acpi, "\"");
 
 end:
 	cJSON_Delete(json);
