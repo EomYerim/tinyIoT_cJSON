@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "cJSON.h"
 #include "onem2m.h"
 
-AE* Json_to_AE(char *json_payload) {
+AE* JSON_to_AE(char *json_payload) {
 	AE *ae = (AE *)malloc(sizeof(AE));
 
 	cJSON *root = NULL;
@@ -25,19 +26,27 @@ AE* Json_to_AE(char *json_payload) {
 
 	root = cJSON_GetObjectItem(json, "m2m:ae");
 
-	// api
+	// api (mandatory)
 	api = cJSON_GetObjectItem(root, "api");
-	if (!cJSON_IsString(api) && (api->valuestring == NULL))
-	{
+	rr = cJSON_GetObjectItemCaseSensitive(root, "rr");	// + rr
+	if (api == NULL || api->valuestring[0] == 0 || isspace(api->valuestring[0])) {
+		fprintf(stderr, "Invalid api\n");
+		if (!cJSON_IsTrue(rr) && !cJSON_IsFalse(rr)) {
+			fprintf(stderr, "Invalid rr\n");
+		}
 		goto end;
 	}
-	ae->api = cJSON_Print(api);
-	ae->api = strtok(ae->api, "\"");
+	else {
+		ae->api = cJSON_Print(api);
+		ae->api = strtok(ae->api, "\"");
+	}
 
-	// rr
-	rr = cJSON_GetObjectItemCaseSensitive(root, "rr");
+
+	// rr (mandatory)
+	//rr = cJSON_GetObjectItemCaseSensitive(root, "rr");
 	if (!cJSON_IsTrue(rr) && !cJSON_IsFalse(rr))
 	{
+		fprintf(stderr, "Invalid rr\n");
 		goto end;
 	}
 	else if (cJSON_IsTrue(rr))
@@ -49,14 +58,17 @@ AE* Json_to_AE(char *json_payload) {
 		ae->rr = false;
 	}
 
-	// rn
+
+	// rn (optional)
 	rn = cJSON_GetObjectItem(root, "rn");
-	if (!cJSON_IsString(rn) && (rn->valuestring == NULL))
-	{
-		goto end;
+	if (rn == NULL || isspace(rn->valuestring[0])) {
+		ae->rn = NULL;
 	}
-	ae->rn = cJSON_Print(rn);
-	ae->rn = strtok(ae->rn, "\"");
+	else {
+		ae->rn = cJSON_Print(rn);
+		ae->rn = strtok(ae->rn, "\"");
+	}
+
 
 end:
 	cJSON_Delete(json);
