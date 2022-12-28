@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-//#include <db.h>
 #include "cJSON.h"
-/*#include "httpd.h"*/
 
 typedef enum {
 	o_CREATE = 1,
@@ -51,6 +49,7 @@ typedef struct {
 	char *ri;
 	char *pi;
 	char *lbl;
+	char *acpi;
 	int ty;
 	int st;
 	int cni;
@@ -82,6 +81,21 @@ typedef struct {
 	char *net;
 	int nct;
 } Sub;
+
+typedef struct {
+	char *rn;
+	char *pi;
+	char *ri;
+	char *ct;
+	char *lt;
+	char *et;
+	char *pv_acor;
+	char *pv_acop;
+	char *pvs_acor;
+	char *pvs_acop;
+	int ty;
+} ACP;
+
 
 typedef struct Node {
 	struct Node *parent;
@@ -142,12 +156,17 @@ CIN* JSON_to_CIN(char *json_payload);
 
 Sub* JSON_to_Sub(char *json_payload);
 
+ACP* JSON_to_ACP(char *json_payload);
+
 char* CSE_to_json(CSE* cse_object);
 char* AE_to_json(AE* ae_object);
 char* CNT_to_json(CNT* cnt_object);
 char* CIN_to_json(CIN* cin_object);
 
 char* Sub_to_json(Sub *sub_object);
+char* Noti_to_json(char *sur, int net, char *rep);
+
+char* ACP_to_json(ACP* acp_object);
 
 //DB function
 int display(char* database);
