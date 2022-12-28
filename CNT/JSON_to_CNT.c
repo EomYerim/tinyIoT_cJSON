@@ -35,12 +35,16 @@ CNT* Json_to_CNT(char *json_payload) {
 
 	// acpi
 	acpi = cJSON_GetObjectItem(root, "acpi");
-	if (!cJSON_IsString(rn) && (rn->valuestring == NULL))
-	{
-		goto end;
+	int acpi_size = cJSON_GetArraySize(acpi);
+	char acpi_str[100] = { '\0' };
+	for (int i = 0; i < acpi_size; i++) {
+		strcat(acpi_str, cJSON_GetArrayItem(acpi, i)->valuestring);
+		if (i < acpi_size - 1) {
+			strcat(acpi_str, ",");
+		}
 	}
-	cnt->acpi = cJSON_Print(acpi);
-	cnt->acpi = strtok(cnt->acpi, "\"");
+	cnt->acpi = (char *)malloc(sizeof(char *) * strlen(acpi_str) + 1);
+	strcpy(cnt->acpi, acpi_str);
 
 end:
 	cJSON_Delete(json);
