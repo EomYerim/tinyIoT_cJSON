@@ -9,6 +9,7 @@ char* CNT_to_json(CNT* cnt_object) {
 
 	cJSON *root = NULL;
 	cJSON *cnt = NULL;
+	cJSON *acpi = NULL;
 
 	/* Our "cnt" item: */
 	root = cJSON_CreateObject();
@@ -24,7 +25,15 @@ char* CNT_to_json(CNT* cnt_object) {
 	cJSON_AddNumberToObject(cnt, "cni", cnt_object->cni);
 	cJSON_AddNumberToObject(cnt, "cbs", cnt_object->cbs);
 	cJSON_AddStringToObject(cnt, "lbl", cnt_object->lbl);
-	cJSON_AddStringToObject(cnt, "acpi", cnt_object->acpi);
+
+	// acpi
+	acpi = cJSON_CreateArray();
+	char *acpi_str = strtok(cnt_object->acpi, ",");
+	do {
+		cJSON_AddItemToArray(acpi, cJSON_CreateString(acpi_str));
+		acpi_str = strtok(NULL, ",");
+	} while (acpi_str != NULL);
+	cJSON_AddItemToObject(cnt, "acpi", acpi);
 
 	json = cJSON_Print(root);
 
